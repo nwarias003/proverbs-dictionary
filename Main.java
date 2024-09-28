@@ -84,21 +84,24 @@ class BalancedTree {
         }
     }
 
+    // Root of the search tree.
     private TreeNode root;
 
+    // Method that recursively inserts a new proverb.
     public void insert(Proverb proverb) {
         root = insert(root, proverb);
     }
 
     private TreeNode insert(TreeNode node, Proverb proverb) {
         
-        //
         if (node == null) {
             return new TreeNode(proverb);
         }
+        
         if (proverb.getHawaiianProverb().compareTo(node.proverb.getHawaiianProverb()) < 0) {
             node.left = insert(node.left, proverb);
-        } else {
+        } 
+        else {
             node.right = insert(node.right, proverb);
         }
 
@@ -145,8 +148,6 @@ class BalancedTree {
         // 
         y.height = 1 + Math.max(getHeight(y.left), getHeight(y.right));
         x.height = 1 + Math.max(getHeight(x.left), getHeight(x.right));
-
-        // 
         return x;
     }
 
@@ -162,8 +163,6 @@ class BalancedTree {
         // 
         x.height = 1 + Math.max(getHeight(x.left), getHeight(x.right));
         y.height = 1 + Math.max(getHeight(y.left), getHeight(y.right));
-
-        // 
         return y;
     }
 
@@ -175,7 +174,7 @@ class BalancedTree {
         return node.height;
     }
 
-    // 
+    //  
     private int getBalance(TreeNode node) {
         if (node == null) {
             return 0;
