@@ -92,81 +92,85 @@ class BalancedTree {
         root = insert(root, proverb);
     }
 
+    // Method to insert a new proverb into the AVL balanced tree.
     private TreeNode insert(TreeNode node, Proverb proverb) {
-        
+
+        // Checks if the current node is empty. If it is, create a new node with the proverb. 
         if (node == null) {
             return new TreeNode(proverb);
         }
-        
+
+        // Checks if the Hawaiian proverb is less than the current node's proverb. If it is, insert it 
+        // into the left subtree.  
         if (proverb.getHawaiianProverb().compareTo(node.proverb.getHawaiianProverb()) < 0) {
             node.left = insert(node.left, proverb);
         } 
+        // If not, insert into the right subtree.
         else {
             node.right = insert(node.right, proverb);
         }
 
-        // 
+        // Updates the height of current node based on heights of its children.
         node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
 
-        //
+        // Gets the balance of current node to check for imbalances.
         int balance = getBalance(node);
 
-        // 
+        // Performs a right rotation if the left subtree is heavier.
         if (balance > 1 && proverb.getHawaiianProverb().compareTo(node.left.proverb.getHawaiianProverb()) < 0) {
             return rightRotate(node);
         }
        
-        // 
+        // Performs a left rotation if the right subtree is heavier.
         if (balance < -1 && proverb.getHawaiianProverb().compareTo(node.right.proverb.getHawaiianProverb()) > 0) {
             return leftRotate(node);
         }
         
-        // 
+        // Performs a left rotation on the left child and a rotation to the right.
         if (balance > 1 && proverb.getHawaiianProverb().compareTo(node.left.proverb.getHawaiianProverb()) > 0) {
             node.left = leftRotate(node.left);
             return rightRotate(node);
         }
         
-        //
+        // Performs a right rotation on the left child and a rotation to the left.
         if (balance < -1 && proverb.getHawaiianProverb().compareTo(node.right.proverb.getHawaiianProverb()) < 0) {
             node.right = rightRotate(node.right);
             return leftRotate(node);
         }
-
         return node;
     }
 
-    // 
+    // Method that performs a right rotation on subtree rooted at y.
     private TreeNode rightRotate(TreeNode y) {
         TreeNode x = y.left;
         TreeNode T2 = x.right;
 
-        // 
+        // Performs rotation.
         x.right = y;
         y.left = T2;
 
-        // 
+        // Updates the heights of the nodes.
         y.height = 1 + Math.max(getHeight(y.left), getHeight(y.right));
         x.height = 1 + Math.max(getHeight(x.left), getHeight(x.right));
         return x;
     }
 
-    // 
+    // Method that performs a left rotation on subtree rooted at x.
     private TreeNode leftRotate(TreeNode x) {
         TreeNode y = x.right;
         TreeNode T2 = y.left;
 
-        // 
+        // Performs rotation.
         y.left = x;
         x.right = T2;
 
-        // 
+        // Updates the heights of the nodes. 
         x.height = 1 + Math.max(getHeight(x.left), getHeight(x.right));
         y.height = 1 + Math.max(getHeight(y.left), getHeight(y.right));
         return y;
     }
 
-    // 
+    // Method that gets the height of node.
     private int getHeight(TreeNode node) {
         if (node == null) {
             return 0;
@@ -174,7 +178,7 @@ class BalancedTree {
         return node.height;
     }
 
-    //  
+    // Method that gets the balance of a node. 
     private int getBalance(TreeNode node) {
         if (node == null) {
             return 0;
@@ -182,6 +186,7 @@ class BalancedTree {
         return getHeight(node.left) - getHeight(node.right);
     }
 
+    // Checks if the Hawaiian proverb exists in tree.
     public boolean member(String hawaiianProverb) {
         return member(root, hawaiianProverb);
     }
