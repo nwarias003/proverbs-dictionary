@@ -187,6 +187,7 @@ class BalancedTree {
         return member(root, hawaiianProverb);
     }
 
+    // Method that recursively checks for the existence of a proverb.
     private boolean member(TreeNode node, String hawaiianProverb) {
         if (node == null) {
             return false;
@@ -201,7 +202,7 @@ class BalancedTree {
         }
     }
 
-    // Returns all proverbs in the binary search tree in alphatbetical order.
+    // Returns all proverbs in the binary search tree in alphabetical order.
     public List<Proverb> getAllProverbs() {
         List<Proverb> proverbs = new ArrayList<>();
         inOrderTraversal(root, proverbs);
@@ -241,13 +242,13 @@ class BalancedTree {
 
 class ProverbCollection {
     
-    // Intializes the Balanced Search Tree for storing proverbs.
+    //Initializes the Balanced Search Tree for storing proverbs.
     private BalancedTree proverbTree = new BalancedTree();
 
-    // Intializes the HashMap to index each Hawaiian word.
+    //Initializes the HashMap to index each Hawaiian word.
     private Map<String, List<Proverb>> hawaiiWordIndex = new HashMap<>();
 
-    // Intializes the HashMap to index each English word.
+    //Initializes the HashMap to index each English word.
     private Map<String, List<Proverb>> engWordIndex = new HashMap<>();
 
     // Inserts proverb to collection and index the words in both languages.
