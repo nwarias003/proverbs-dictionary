@@ -201,12 +201,14 @@ class BalancedTree {
         }
     }
 
+    // Returns all proverbs in the binary search tree in alphatbetical order.
     public List<Proverb> getAllProverbs() {
         List<Proverb> proverbs = new ArrayList<>();
         inOrderTraversal(root, proverbs);
         return proverbs;
     }
 
+    // Method that performs in-order traversal of the binary search tree.
     private void inOrderTraversal(TreeNode node, List<Proverb> proverbs) {
         if (node == null) {
             return;
@@ -216,13 +218,14 @@ class BalancedTree {
         inOrderTraversal(node.right, proverbs);
     }
 
+    // Search through the binary search tree to see if it has a specific word in either Hawaiian or English.
     public List<Proverb> searchByWord(String word) {
         List<Proverb> proverbs = new ArrayList<>();
         searchByWord(root, word, proverbs);
         return proverbs;
     }
 
-    // Recursively
+    // Method that recursively searches for proverbs by word.
     private void searchByWord(TreeNode node, String word, List<Proverb> proverbs) {
         if (node == null) {
             return;
