@@ -29,49 +29,269 @@ import java.util.Map;
 
 
 class Proverb {
-    private String hawaiianPhrase;
-    private String englishPhrase;
+    private String hawaiianProverb;
+    private String englishProverb;
     private String hawaiianExplanation;
     private String englishExplanation;
 
-    public Proverb(String hawaiianPhrase, String englishPhrase, String hawaiianExplanation, String englishExplanation) {
-        this.hawaiianPhrase = hawaiianPhrase;
-        this.englishPhrase = englishPhrase;
+    // Creating constructor for initializing object.
+    public Proverb(String hawaiianProverb, String englishProverb, String hawaiianExplanation, String englishExplanation) {
+        this.hawaiianProverb = hawaiianProverb;
+        this.englishProverb = englishProverb;
         this.hawaiianExplanation = hawaiianExplanation;
         this.englishExplanation = englishExplanation;
     }
 
-    public String getHawaiianPhrase() {
-        return hawaiianPhrase;
+    // Getter method for Hawaiian proverb.
+    public String getHawaiianProverb() {
+        return hawaiianProverb;
     }
 
-    public String getEnglishPhrase() {
-        return englishPhrase;
+    // Getter method for English proverb.
+    public String getEnglishProverb() {
+        return englishProverb;
     }
 
+    // Getter method for Hawaiian explanation.
     public String getHawaiianExplanation() {
         return hawaiianExplanation;
     }
 
+    // Getter method for English explanation.
     public String getEnglishExplanation() {
         return englishExplanation;
     }
 
+    // toString to represent the Proverb class object.
     @Override
     public String toString() {
-        return "Hawaiian Phrase: " + hawaiianPhrase + "\n" +
-               "English Translation: " + englishPhrase + "\n" +
+        return "Hawaiian Proverb: " + hawaiianProverb + "\n" +
+               "English Translation: " + englishProverb + "\n" +
                "Hawaiian Explanation: " + hawaiianExplanation + "\n" +
                "English Explanation: " + englishExplanation + "\n";
     }
 }
 
+class BalancedTree {
+    private class TreeNode {
+        Proverb proverb;
+        TreeNode left, right;
+        int height;  
+
+        TreeNode(Proverb proverb) {
+            this.proverb = proverb;
+            this.height = 1; 
+        }
+    }
+
+    private TreeNode root;
+
+    public void insert(Proverb proverb) {
+        root = insert(root, proverb);
+    }
+
+    private TreeNode insert(TreeNode node, Proverb proverb) {
+        
+        //
+        if (node == null) {
+            return new TreeNode(proverb);
+        }
+        if (proverb.getHawaiianProverb().compareTo(node.proverb.getHawaiianProverb()) < 0) {
+            node.left = insert(node.left, proverb);
+        } else {
+            node.right = insert(node.right, proverb);
+        }
+
+        // 
+        node.height = 1 + Math.max(getHeight(node.left), getHeight(node.right));
+
+        //
+        int balance = getBalance(node);
+
+        // 
+        if (balance > 1 && proverb.getHawaiianProverb().compareTo(node.left.proverb.getHawaiianProverb()) < 0) {
+            return rightRotate(node);
+        }
+       
+        // 
+        if (balance < -1 && proverb.getHawaiianProverb().compareTo(node.right.proverb.getHawaiianProverb()) > 0) {
+            return leftRotate(node);
+        }
+        
+        // 
+        if (balance > 1 && proverb.getHawaiianProverb().compareTo(node.left.proverb.getHawaiianProverb()) > 0) {
+            node.left = leftRotate(node.left);
+            return rightRotate(node);
+        }
+        
+        //
+        if (balance < -1 && proverb.getHawaiianProverb().compareTo(node.right.proverb.getHawaiianProverb()) < 0) {
+            node.right = rightRotate(node.right);
+            return leftRotate(node);
+        }
+
+        return node;
+    }
+
+    // 
+    private TreeNode rightRotate(TreeNode y) {
+        TreeNode x = y.left;
+        TreeNode T2 = x.right;
+
+        // 
+        x.right = y;
+        y.left = T2;
+
+        // 
+        y.height = 1 + Math.max(getHeight(y.left), getHeight(y.right));
+        x.height = 1 + Math.max(getHeight(x.left), getHeight(x.right));
+
+        // 
+        return x;
+    }
+
+    // 
+    private TreeNode leftRotate(TreeNode x) {
+        TreeNode y = x.right;
+        TreeNode T2 = y.left;
+
+        // 
+        y.left = x;
+        x.right = T2;
+
+        // 
+        x.height = 1 + Math.max(getHeight(x.left), getHeight(x.right));
+        y.height = 1 + Math.max(getHeight(y.left), getHeight(y.right));
+
+        // 
+        return y;
+    }
+
+    // 
+    private int getHeight(TreeNode node) {
+        if (node == null) {
+            return 0;
+        }
+        return node.height;
+    }
+
+    // 
+    private int getBalance(TreeNode node) {
+        if (node == null) {
+            return 0;
+        }
+        return getHeight(node.left) - getHeight(node.right);
+    }
+
+    public boolean member(String hawaiianProverb) {
+        return member(root, hawaiianProverb);
+    }
+
+    private boolean member(TreeNode node, String hawaiianProverb) {
+        if (node == null) {
+            return false;
+        }
+        int cmp = hawaiianProverb.compareTo(node.proverb.getHawaiianProverb());
+        if (cmp == 0) {
+            return true;
+        } else if (cmp < 0) {
+            return member(node.left, hawaiianProverb);
+        } else {
+            return member(node.right, hawaiianProverb);
+        }
+    }
+
+    public List<Proverb> getAllProverbs() {
+        List<Proverb> proverbs = new ArrayList<>();
+        inOrderTraversal(root, proverbs);
+        return proverbs;
+    }
+
+    private void inOrderTraversal(TreeNode node, List<Proverb> proverbs) {
+        if (node == null) {
+            return;
+        }
+        inOrderTraversal(node.left, proverbs);
+        proverbs.add(node.proverb);
+        inOrderTraversal(node.right, proverbs);
+    }
+
+    public List<Proverb> searchByWord(String word) {
+        List<Proverb> proverbs = new ArrayList<>();
+        searchByWord(root, word, proverbs);
+        return proverbs;
+    }
+
+    // Recursively
+    private void searchByWord(TreeNode node, String word, List<Proverb> proverbs) {
+        if (node == null) {
+            return;
+        }
+        searchByWord(node.left, word, proverbs);
+        if (node.proverb.getHawaiianProverb().contains(word) || node.proverb.getEnglishProverb().contains(word)) {
+            proverbs.add(node.proverb);
+        }
+        searchByWord(node.right, word, proverbs);
+    }
+}
 
 
+class ProverbCollection {
+    
+    // Intializes the Balanced Search Tree for storing proverbs.
+    private BalancedTree proverbTree = new BalancedTree();
+
+    // Intializes the HashMap to index each Hawaiian word.
+    private Map<String, List<Proverb>> hawaiiWordIndex = new HashMap<>();
+
+    // Intializes the HashMap to index each English word.
+    private Map<String, List<Proverb>> engWordIndex = new HashMap<>();
+
+    // Inserts proverb to collection and index the words in both languages.
+    public void addProverb(Proverb proverb) {
+        proverbTree.insert(proverb);
+        indexProverb(proverb);
+    }
+
+    // Checks if proverb exists in the collection by Hawaiian phrase.
+    public boolean containsProverb(String hawaiianPhrase) {
+        return proverbTree.member(hawaiianPhrase);
+    }
+
+    // Indexes proverb both Hawaiian and English for quick search by word.
+    private void indexProverb(Proverb proverb) {
+ 
+        // Splits and adds each word to into Hawaiian index.
+        String[] hawaiianWords = proverb.getHawaiianProverb().split("\\s+");
+        for (String word : hawaiianWords) {
+            hawaiiWordIndex.computeIfAbsent(word, k -> new ArrayList<>()).add(proverb);
+        }
+
+        // Splits and adds each word into English index.
+        String[] englishWords = proverb.getEnglishProverb().split("\\s+");
+        for (String word : englishWords) {
+            engWordIndex.computeIfAbsent(word, k -> new ArrayList<>()).add(proverb);
+        }
+    }
+
+    // Retrieves all proverbs stored within balanced search tree.
+    public List<Proverb> getAllProverbs() {
+        return proverbTree.getAllProverbs();
+    }
+    
+    // Returns a list of proverbs that contain specified Hawaiian word.
+    public List<Proverb> meHua(String word) {
+        return hawaiiWordIndex.getOrDefault(word, List.of());
+    }
 
 
+    // Returns a list of proverbs that contain specified Englishword.
+    public List<Proverb> withWord(String word) {
+        return engWordIndex.getOrDefault(word, List.of());
+    }
 
-
+    
+}
 
 public class Main {
     public static void main(String[] args) {
